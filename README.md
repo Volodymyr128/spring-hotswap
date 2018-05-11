@@ -1,11 +1,14 @@
-Demo:
-1. Start HotswaptestApplication.java
-2. curl -X GET http://localhost:9001/item
-3. Change Controller.java to return different items list
-4. Save Controller.java
-5. curl -X GET http://localhost:9001/item
-6. 2nd and 5th steps should return different output without project restart
+Multi-module maven setup and hot reload demo #1: add core module to base classloader and item module to restart classloader:
+1. Start HotswaptestApplication.java (and never restart it to the end of the demo!)
+2. curl -X GET http://localhost:9001/item. See results. Results depends on two modules: item (Controller.java) and core (ItemService.java)
+3. Change Controller.java to return different result
+4. cd item/ && mvn clean install  // this should cause logs about auto restarting you Spring app
+5. curl -X GET http://localhost:9001/item. See results, they should be changed
+6. Change ItemService.java to return different results.
+7. cd core/ && mvn clean install
+8. curl -X GET http://localhost:9001/item. See results, they should NOT be changed, due to core/src/main/resources/META-INF/spring-devtools.properties
 
+Important note:
 It's not enough to change file to achieve hot swap with Spring devtools. You have to change classpath (.class file), means re-build project
 To enable  project rebuild on Cmd+Save on Intellij (Eclipse automatically change classpath on Cmd+Save) do:
 1. Press Ctrl+Shift+A
